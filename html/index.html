@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header__logo"></div>
+        <nav class="header__nav">
+            <ul class="header__nav nav">
+                <li class="nav__menu-item"></li>
+                <li class="nav__menu-item"></li>
+                <li class="nav__menu-item"></li>
+            </ul>
+        </nav>
+    </header>
+    <main class="main">
+        <section class="filters">
+
+            <article class="filters__filter-item">
+                <input type="text">
+            </article>
+
+            <article class="filters__filter-item">
+                <select>
+                  <option disabled selected>Species</option>
+                  <option>Human</option>
+                  <option>Alien</option>
+                </select>
+            </article>
+            <article class="filters__filter-item">
+                <select>
+                  <option disabled selected>Gender</option>
+                  <option>Male</option>
+                  <option>Female</option>
+                </select>
+            </article>
+            <article class="filters__filter-item">
+                <select>
+                  <option disabled selected>Status</option>
+                  <option>Alive</option>
+                  <option>Dead</option>
+                  <option>Unknown</option>
+                </select>
+            </article>
+        </section>
+
+        <section class="characters">
+            <article class="characters__card">
+                <div class="characters__card-image"></div>
+                <div class="characters__card-info">
+                    <h3 class="characters__card-name"></h3>
+                    <span class="characters__card-specie"></span>
+                </div>
+            </article>
+            <button>LOAD MORE</button>
+        </section>
+
+    </main>
+    <footer class="footer">
+        <p>Made with ❤️ for the MobProgramming team</p>
+    </footer>
+        
+    <script src="script.js"></script>
+</body>
+</html>
