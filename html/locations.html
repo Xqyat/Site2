@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header__content">
+            <div class="header__logo"><a href="characters.html"><img src="/assets/images/logo-black.png" alt=""></a></div>
+            <nav class="header__nav">
+                <ul class="header__nav nav">
+                    <li class="nav__menu-item"><a href="characters.html">Characters</a></li>
+                    <li class="nav__menu-item"><a href="locations.html">Locations</a></li>
+                    <li class="nav__menu-item"><a href="episodes.html">Episodes</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main class="main">
+        <img src="/assets/images/locations.png" alt="">
+        
+        <section class="filters" data-type="location">
+
+            <article class="filters__filter-item">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12.5 11H11.71L11.43 10.73C12.41 9.59 13 8.11 13 6.5C13 2.91 10.09 0 6.5 0C2.91 0 0 2.91 0 6.5C0 10.09 2.91 13 6.5 13C8.11 13 9.59 12.41 10.73 11.43L11 11.71V12.5L16 17.49L17.49 16L12.5 11ZM6.5 11C4.01 11 2 8.99 2 6.5C2 4.01 4.01 2 6.5 2C8.99 2 11 4.01 11 6.5C11 8.99 8.99 11 6.5 11Z" fill="black" fill-opacity="0.54"/>
+                    </svg>                    
+                <input type="text" placeholder="Filter by name...">
+            </article>
+
+            <article class="filters__filter-item">
+                <select data-filter="type"><option disabled selected>Type</option></select>
+            </article>
+            <article class="filters__filter-item">
+                <select data-filter="dimension"><option disabled selected>Dimension</option></select>
+            </article>
+        </section>
+
+        <section class="locations cards">
+            <!-- <article class="locations__card card">
+                <div class="locations__card-info">
+                    <h3 class="locations__card-name">Earth (C-137)</h3>
+                    <span class="locations__card-other">Planet</span>
+                </div>
+            </article> -->
+        </section>
+        <button class="loadmore" data-type="location" 
+        data-url="https://rickandmortyapi.com/api/location">LOAD MORE</button>
+
+    </main>
+    <footer class="footer">
+        <p>Made with ❤️ for the MobProgramming team</p>
+    </footer>
+        
+    <script src="/js/script.js"></script>
+</body>
+</html>

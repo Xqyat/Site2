@@ -12,49 +12,57 @@
         <nav class="header__nav">
             <ul class="header__nav nav">
                 <li class="nav__menu-item"><a href="characters.html">Characters</a></li>
-                <li class="nav__menu-item"><a href="">Locations</a></li>
-                <li class="nav__menu-item"><a href="">Episodes</a></li>
+                <li class="nav__menu-item"><a href="locations.html">Locations</a></li>
+                <li class="nav__menu-item"><a href="episodes.html">Episodes</a></li>
             </ul>
         </nav>
     </header>
     <main class="main">
+        
+        <button class="goback-btn"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M16 7H3.83L9.42 1.41L8 0L0 8L8 16L9.41 14.59L3.83 9H16V7Z" fill="black"/>
+        </svg>
+        GO BACK</button>
+
         <section class="character-details">
             <div class="character-details__portrait">
-                <img src="/assets/images/characters/rick.png" alt="">
+                <img src="/assets/images/characters/rick.jpg" alt="">
                 <h1>Rick Sanchez</h1>
             </div>
             <div class="character-details__info">
-                <div class="character-details__info informations">
+                <div class="character-details__info-block informations-items">
+                    <h3>Informations</h3>
                     <article class="informations__item">
-                        <h6></h6>
+                        <h6>Gender</h6>
+                        <span>Male</span>
+                    </article>
+                    <article class="informations__item">
+                        <h6>Status</h6>
                         <span></span>
                     </article>
                     <article class="informations__item">
-                        <h6></h6>
+                        <h6>Specie</h6>
                         <span></span>
                     </article>
                     <article class="informations__item">
-                        <h6></h6>
+                        <h6>Origin</h6>
                         <span></span>
                     </article>
                     <article class="informations__item">
-                        <h6></h6>
+                        <h6>Type</h6>
                         <span></span>
                     </article>
                     <article class="informations__item">
-                        <h6></h6>
-                        <span></span>
-                    </article>
-                    <article class="informations__item">
-                        <h6></h6>
+                        <h6>Location</h6>
                         <span></span>
                     </article>
                 </div>
-                <div class="character-details__info episodes">
+                <div class="character-details__info-block episodes-items">
+                    <h3>Episodes</h3>
                     <article class="episodes__item">
-                        <h6></h6>
-                        <p></p>
-                        <span></span>
+                        <h6>S01E01</h6>
+                        <span>Pilot</span>
+                        <p>December 2, 2013</p>
                     </article>
                 </div>
             </div>
@@ -67,6 +75,6 @@
         <p>Made with ❤️ for the MobProgramming team</p>
     </footer>
         
-    <script src="script.js"></script>
+    <script src="/js/script.js"></script>
 </body>
 </html>
