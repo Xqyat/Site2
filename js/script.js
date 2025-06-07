@@ -1,15 +1,13 @@
 // Filters
 
+const filtersSection = document.querySelector('.filters');
+  const type = filtersSection ? filtersSection.dataset.type : 'character';
+  const containerSelector = `section.${type}s.cards`;
+  const loadMoreBtn = document.querySelector(`.loadmore[data-type="${type}"]`);
+  const baseUrl = loadMoreBtn ? loadMoreBtn.dataset.url : '';
+  const searchInput = filtersSection.querySelector('input[type="text"]');
+  const selects = filtersSection.querySelectorAll('select[data-filter]');
 
-const loadMoreBtn = document.querySelector('.loadmore');
-
-const searchInput = document.querySelector('.filters input[type="text"]');
-const selects = document.querySelectorAll('select[data-filter]');
-
-
-const baseUrl = loadMoreBtn.dataset.url;
-const containerSelector = 'section.characters.cards'; 
-const type = 'character';
 
 
 
@@ -41,37 +39,48 @@ function fillSelectOptions(selectElement, valuesSet) {
 }
 
 async function loadFilterOptions() {
-  try {
+  if (type === 'character') {
     const speciesSet = await getAllUniqueFieldValues(baseUrl, 'species');
     const genderSet = await getAllUniqueFieldValues(baseUrl, 'gender');
     const statusSet = await getAllUniqueFieldValues(baseUrl, 'status');
-
-    fillSelectOptions(document.querySelector('select[data-filter="species"]'), speciesSet);
-    fillSelectOptions(document.querySelector('select[data-filter="gender"]'), genderSet);
-    fillSelectOptions(document.querySelector('select[data-filter="status"]'), statusSet);
-  } catch (err) {
-    console.error('Ошибка загрузки фильтров:', err);
+    fillSelectOptions(filtersSection.querySelector('select[data-filter="species"]'), speciesSet);
+    fillSelectOptions(filtersSection.querySelector('select[data-filter="gender"]'), genderSet);
+    fillSelectOptions(filtersSection.querySelector('select[data-filter="status"]'), statusSet);
+  } else if (type === 'location') {
+    const typeSet = await getAllUniqueFieldValues(baseUrl, 'type');
+    const dimensionSet = await getAllUniqueFieldValues(baseUrl, 'dimension');
+    fillSelectOptions(filtersSection.querySelector('select[data-filter="type"]'), typeSet);
+    fillSelectOptions(filtersSection.querySelector('select[data-filter="dimension"]'), dimensionSet);
   }
 }
 
 
 function getFilterParams() {
   const params = new URLSearchParams();
+  const value = searchInput.value.trim();
 
-  const name = searchInput.value.trim();
-  if (name) params.append('name', name);
-
-  selects.forEach(select => {
-    const value = select.value;
-    const filterType = select.dataset.filter;
-    const defaultOption = select.querySelector('option[disabled]').textContent;
-    if (filterType && value && value !== defaultOption) {
-      params.append(filterType, value);
+  if (type === 'episode') {
+    if (value) {
+      if (/^S\d{2}E\d{2}$/i.test(value) || /^S\d{2}$/i.test(value)) {
+        params.append('episode', value);
+      } else {
+        params.append('name', value);
+      }
     }
-  });
-
+  } else {
+    if (value) params.append('name', value);
+    selects.forEach(select => {
+      const val = select.value;
+      const filterType = select.dataset.filter;
+      const defaultOption = select.querySelector('option[disabled]').textContent;
+      if (filterType && val && val !== defaultOption) {
+        params.append(filterType, val);
+      }
+    });
+  }
   return params.toString();
 }
+
 
 
 function loadAndRenderFiltered(url, containerSelector, type, loadMoreBtn, filters = '', clearContainer = true) {
