@@ -1,12 +1,20 @@
 // Filters
 
+// Универсально определяем тип страницы
+const type =
+  document.querySelector('[data-type]')?.dataset.type ||
+  document.querySelector('.filters')?.dataset.type ||
+  'character';
+
+const containerSelector = `section.${type}s.cards`;
+const container = document.querySelector(containerSelector);
+
+// Фильтры и связанные элементы
 const filtersSection = document.querySelector('.filters');
-  const type = filtersSection ? filtersSection.dataset.type : 'character';
-  const containerSelector = `section.${type}s.cards`;
-  const loadMoreBtn = document.querySelector(`.loadmore[data-type="${type}"]`);
-  const baseUrl = loadMoreBtn ? loadMoreBtn.dataset.url : '';
-  const searchInput = filtersSection ? filtersSection.querySelector('input[type="text"]') : null;
-  const selects = filtersSection ?  filtersSection.querySelectorAll('select[data-filter]') : null;
+const loadMoreBtn = document.querySelector(`.loadmore[data-type="${type}"]`);
+const baseUrl = loadMoreBtn?.dataset.url || '';
+const searchInput = filtersSection?.querySelector('input[type="text"]') || null;
+const selects = filtersSection?.querySelectorAll('select[data-filter]') || null;
 
 
 
@@ -413,6 +421,61 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 })
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+
+  // Определяем тип страницы по классу или другому признаку, например:
+  const isLocationPage = !!document.querySelector('.location-details');
+  const isEpisodePage = !!document.querySelector('.episode-details');
+
+  if (isLocationPage) {
+    fetch(`https://rickandmortyapi.com/api/location/${id}`)
+      .then(res => res.json())
+      .then(locationData => {
+        document.querySelector('.main__title').textContent = locationData.name;
+        document.querySelector('.selected-filters__item:nth-child(1) span').textContent = locationData.type;
+        document.querySelector('.selected-filters__item:nth-child(2) span').textContent = locationData.dimension;
+
+        const container = document.querySelector('section.characters.cards');
+        container.innerHTML = '';
+        const type = 'character';
+
+        locationData.residents.forEach(url => {
+          fetch(url)
+            .then(res => res.json())
+            .then(character => {
+              const card = createCard(character, type);
+              container.appendChild(card);
+            });
+        });
+      });
+  } else if (isEpisodePage) {
+    fetch(`https://rickandmortyapi.com/api/episode/${id}`)
+      .then(res => res.json())
+      .then(episodeData => {
+        document.querySelector('.main__title').textContent = episodeData.name;
+        document.querySelector('.selected-filters__item:nth-child(1) span').textContent = episodeData.air_date;
+        document.querySelector('.selected-filters__item:nth-child(2) span').textContent = episodeData.episode;
+
+        const container = document.querySelector('section.characters.cards');
+        container.innerHTML = '';
+        const type = 'character';
+
+        episodeData.characters.forEach(url => {
+          fetch(url)
+            .then(res => res.json())
+            .then(character => {
+              const card = createCard(character, type);
+              container.appendChild(card);
+            });
+        });
+      });
+  }
+});
 
 
 

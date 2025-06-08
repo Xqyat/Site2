@@ -140,7 +140,7 @@
 .goback-btn {
     position: absolute;
     left: 15%;
-    top: 10%;
+    top: 100px;
     background-color: rgba(0, 0, 0, 0);
     color: rgba(0, 0, 0, 1);
     font-weight: 700;
@@ -211,6 +211,12 @@
 .filters__filter-item input, .filters__filter-item select {
     font-size: 16px;
     color: rgba(0, 0, 0, 0.6);
+}
+
+/* reset-filter */
+
+.reset-filter{
+    background: none;
 }
 
 /* Selected-filters */
