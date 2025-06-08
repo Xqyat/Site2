@@ -318,8 +318,12 @@
 
 .informations__item, .episodes__item {
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    padding: 1rem 0;
+    padding: 1rem 1rem 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
+
 
 /* main__subtitle */
 

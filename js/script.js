@@ -5,8 +5,8 @@ const filtersSection = document.querySelector('.filters');
   const containerSelector = `section.${type}s.cards`;
   const loadMoreBtn = document.querySelector(`.loadmore[data-type="${type}"]`);
   const baseUrl = loadMoreBtn ? loadMoreBtn.dataset.url : '';
-  const searchInput = filtersSection.querySelector('input[type="text"]');
-  const selects = filtersSection.querySelectorAll('select[data-filter]');
+  const searchInput = filtersSection ? filtersSection.querySelector('input[type="text"]') : null;
+  const selects = filtersSection ?  filtersSection.querySelectorAll('select[data-filter]') : null;
 
 
 
@@ -57,7 +57,8 @@ async function loadFilterOptions() {
 
 function getFilterParams() {
   const params = new URLSearchParams();
-  const value = searchInput.value.trim();
+  if(searchInput){
+    const value = searchInput.value.trim();
 
   if (type === 'episode') {
     if (value) {
@@ -80,6 +81,8 @@ function getFilterParams() {
   }
   return params.toString();
 }
+  }
+  
 
 
 
@@ -130,10 +133,11 @@ if(searchInput) {
   });
 }
 
-
+if(selects) {
 selects.forEach(select => {
   select.addEventListener('change', updateResults);
 });
+}
 
 
 if (loadMoreBtn) {
@@ -260,8 +264,22 @@ function createCard(data, type) {
     card.appendChild(info);
   }
 
+  card.style.cursor = 'pointer';
+  const pageMap = {
+    character: 'characters_details.html',
+    location: 'locations_details.html',
+    episode: 'episodes_details.html'
+  };
+  
+  card.addEventListener('click', () => {
+    const page = pageMap[type] || 'index.html';
+    window.location.href = `${page}?id=${data.id}`;
+  });
+  
+
   return card;
 }
+
 
 
 function loadAndRender(url, containerSelector, type, loadMoreBtn) {
@@ -299,6 +317,102 @@ document.querySelectorAll('.loadmore').forEach(loadMoreBtn => {
     }
   });
 });
+
+// Details
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+
+  fetch(`https://rickandmortyapi.com/api/character/${id}`)
+    .then(res => res.json())
+    .then(data => {
+      const container = document.querySelector('.character-details');
+
+      container.innerHTML = `
+          <div class="character-details__portrait">
+            <img src="${data.image}" alt="${data.name}">
+            <h1>${data.name}</h1>
+          </div>
+          <div class="character-details__info">
+            <div class="character-details__info-block informations-items">
+              <h3>Informations</h3>
+              <article class="informations__item">
+              <div class="informations__item-contetnt">
+                <h6>Gender</h6>
+                <span>${data.gender}</span>
+              </div>
+              </article>
+              <article class="informations__item">
+              <div class="informations__item-contetnt">
+                <h6>Status</h6>
+                <span>${data.status}</span>
+              </div>
+              </article>
+              <article class="informations__item">
+              <div class="informations__item-contetnt">
+                <h6>Species</h6>
+                <span>${data.species}</span>
+              </div>
+              </article>
+              <article class="informations__item">
+              <div class="informations__item-contetnt">
+                <h6>Origin</h6>
+                <span>${data.origin.name}</span>
+              </div>
+              </article>
+              <article class="informations__item">
+              <div class="informations__item-contetnt">
+                <h6>Type</h6>
+                <span>${data.type || 'Unknown'}</span>
+              </div>
+              </article>
+              <article class="informations__item" id="location_url">
+              <div class="informations__item-contetnt">
+                <h6>Location</h6>
+                <span>${data.location.name}</span>
+              </div>
+              <div class="informations__item-svg">
+                <svg width="8" height="12" viewBox="0 0 8 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M1.99997 0L0.589966 1.41L5.16997 6L0.589966 10.59L1.99997 12L7.99997 6L1.99997 0Z" fill="#8E8E93"/>
+                </svg>
+              </div>
+              </article>
+            </div>
+            <div class="character-details__info-block episodes-items">
+              <h3>Episodes</h3>
+            </div>
+          </div>
+      `;
+
+      const episodesContainer = container.querySelector('.episodes-items');
+      const firstEpisodes = data.episode.slice(0, 4); // только первые 4
+
+      Promise.all(firstEpisodes.map(url => fetch(url).then(res => res.json())))
+        .then(episodes => {
+          episodes.forEach(epData => {
+            const episodeEl = document.createElement('article');
+            episodeEl.className = 'episodes__item';
+            episodeEl.innerHTML = `
+            <div class="episodes__item-content">
+              <h6>${epData.episode}</h6>
+              <span>${epData.name}</span>
+              <p>${epData.air_date}</p>
+            </div>
+            <div class="episodes__item-svg">
+              <svg width="8" height="12" viewBox="0 0 8 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M1.99997 0L0.589966 1.41L5.16997 6L0.589966 10.59L1.99997 12L7.99997 6L1.99997 0Z" fill="#8E8E93"/>
+              </svg>
+            </div>
+            `;
+            episodesContainer.appendChild(episodeEl);
+          });
+        });
+    })
+    .catch(err => {
+      console.error('Ошибка загрузки данных персонажа:', err);
+    });
+
+})
 
 
 
