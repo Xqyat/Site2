@@ -47,37 +47,34 @@
 
 
         <section class="filters" data-type="character">
-
-            <article class="filters__filter-item">
+            
+            <div class="filters__filter-item">
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12.5 11H11.71L11.43 10.73C12.41 9.59 13 8.11 13 6.5C13 2.91 10.09 0 6.5 0C2.91 0 0 2.91 0 6.5C0 10.09 2.91 13 6.5 13C8.11 13 9.59 12.41 10.73 11.43L11 11.71V12.5L16 17.49L17.49 16L12.5 11ZM6.5 11C4.01 11 2 8.99 2 6.5C2 4.01 4.01 2 6.5 2C8.99 2 11 4.01 11 6.5C11 8.99 8.99 11 6.5 11Z" fill="black" fill-opacity="0.54"/>
                     </svg>                    
                 <input type="text" placeholder="Filter by name...">
-            </article>
+            </div>
 
-            <article class="filters__filter-item">
-                <select data-filter="species"><option disabled selected>Species</option></select>
-                <button class="reset-filter" data-reset="species">×</button>
-            </article>
-            <article class="filters__filter-item">
-                <select data-filter="gender"><option disabled selected>Gender</option></select>
-                <button class="reset-filter" data-reset="gender">×</button>
-            </article>
-            <article class="filters__filter-item">
-                <select data-filter="status"><option disabled selected>Status</option></select>
-                <button class="reset-filter" data-reset="status">×</button>
-            </article>
+            <div class="select-wrapper">
+                <select class="filters__filter-item" data-filter="species">
+                 <option value="" disabled selected>Specie</option>
+                </select>
+            </div>
+
+            <div class="select-wrapper">
+                <select class="filters__filter-item" data-filter="gender">
+                 <option value="" disabled selected>Gender</option>
+                </select>
+            </div>
+
+            <div class="select-wrapper">
+                <select class="filters__filter-item" data-filter="status">
+                 <option value="" disabled selected>Status</option>
+                </select>
+            </div>
         </section>
         <section class="characters cards">
-            <!-- <article class="characters__card card">
-                <div class="characters__card-image-box">
-                    <img class="characters__card-image" src="/assets/images/characters/rick.jpg" alt="">
-                </div>
-                <div class="characters__card-info">
-                    <h3 class="characters__card-name">Rick Sanchez</h3>
-                    <span class="characters__card-other">Human</span>
-                </div>
-            </article>   -->
+            
         </section> 
         <button class="loadmore" data-type="character" 
         data-url="https://rickandmortyapi.com/api/character">LOAD MORE</button>

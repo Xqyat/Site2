@@ -1,6 +1,8 @@
 // Filters
 
-// Универсально определяем тип страницы
+const select = document.querySelector('.filters__filter-item');
+   const wrapper = document.querySelector('.select-wrapper');
+
 const type =
   document.querySelector('[data-type]')?.dataset.type ||
   document.querySelector('.filters')?.dataset.type ||
@@ -9,7 +11,7 @@ const type =
 const containerSelector = `section.${type}s.cards`;
 const container = document.querySelector(containerSelector);
 
-// Фильтры и связанные элементы
+
 const filtersSection = document.querySelector('.filters');
 const loadMoreBtn = document.querySelector(`.loadmore[data-type="${type}"]`);
 const baseUrl = loadMoreBtn?.dataset.url || '';
@@ -146,6 +148,30 @@ selects.forEach(select => {
   select.addEventListener('change', updateResults);
 });
 }
+
+if (selects) {
+  selects.forEach(select => {
+    const wrapper = select.closest('.select-wrapper');
+
+    select.addEventListener('change', () => {
+      if (wrapper) {
+        const isNotDefault = !select.querySelector('option[disabled]:checked');
+        wrapper.classList.toggle('has-value', isNotDefault);
+      }
+      updateResults();
+    });
+
+    if (wrapper) {
+      wrapper.addEventListener('click', (e) => {
+        if (!e.target.closest('select') && wrapper.classList.contains('has-value')) {
+          select.selectedIndex = 0;
+          select.dispatchEvent(new Event('change'));
+        }
+      });
+    }
+  });
+}
+
 
 
 if (loadMoreBtn) {
@@ -344,48 +370,56 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="character-details__info">
             <div class="character-details__info-block informations-items">
               <h3>Informations</h3>
+
               <article class="informations__item">
-              <div class="informations__item-contetnt">
-                <h6>Gender</h6>
-                <span>${data.gender}</span>
-              </div>
+                <div class="informations__item-contetnt">
+                  <h6>Gender</h6>
+                  <span>${data.gender}</span>
+                </div>
               </article>
+
               <article class="informations__item">
-              <div class="informations__item-contetnt">
-                <h6>Status</h6>
-                <span>${data.status}</span>
-              </div>
+                <div class="informations__item-contetnt">
+                  <h6>Status</h6>
+                  <span>${data.status}</span>
+                </div>
               </article>
+
               <article class="informations__item">
-              <div class="informations__item-contetnt">
-                <h6>Species</h6>
-                <span>${data.species}</span>
-              </div>
+                <div class="informations__item-contetnt">
+                  <h6>Species</h6>
+                  <span>${data.species}</span>
+                </div>
               </article>
+
               <article class="informations__item">
-              <div class="informations__item-contetnt">
-                <h6>Origin</h6>
-                <span>${data.origin.name}</span>
-              </div>
+                <div class="informations__item-contetnt">
+                  <h6>Origin</h6>
+                  <span>${data.origin.name}</span>
+                </div>
               </article>
+
               <article class="informations__item">
-              <div class="informations__item-contetnt">
-                <h6>Type</h6>
-                <span>${data.type || 'Unknown'}</span>
-              </div>
+                <div class="informations__item-contetnt">
+                  <h6>Type</h6>
+                  <span>${data.type || 'Unknown'}</span>
+                </div>
               </article>
-              <article class="informations__item" id="location_url">
-              <div class="informations__item-contetnt">
-                <h6>Location</h6>
-                <span>${data.location.name}</span>
-              </div>
-              <div class="informations__item-svg">
-                <svg width="8" height="12" viewBox="0 0 8 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M1.99997 0L0.589966 1.41L5.16997 6L0.589966 10.59L1.99997 12L7.99997 6L1.99997 0Z" fill="#8E8E93"/>
-                </svg>
-              </div>
+
+              <article class="informations__item" id="location_url" data-id="${data.location.url.split('/').pop()}">
+                <div class="informations__item-contetnt">
+                  <h6>Location</h6>
+                  <span>${data.location.name}</span>
+                </div>
+                <div class="informations__item-svg">
+                  <svg width="8" height="12" viewBox="0 0 8 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M1.99997 0L0.589966 1.41L5.16997 6L0.589966 10.59L1.99997 12L7.99997 6L1.99997 0Z" fill="#8E8E93"/>
+                  </svg>
+                </div>
               </article>
+
             </div>
+
             <div class="character-details__info-block episodes-items">
               <h3>Episodes</h3>
             </div>
@@ -393,13 +427,14 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
 
       const episodesContainer = container.querySelector('.episodes-items');
-      const firstEpisodes = data.episode.slice(0, 4); // только первые 4
+      const firstEpisodes = data.episode.slice(0, 4);
 
       Promise.all(firstEpisodes.map(url => fetch(url).then(res => res.json())))
         .then(episodes => {
           episodes.forEach(epData => {
             const episodeEl = document.createElement('article');
             episodeEl.className = 'episodes__item';
+            episodeEl.dataset.id = epData.id;
             episodeEl.innerHTML = `
             <div class="episodes__item-content">
               <h6>${epData.episode}</h6>
@@ -422,13 +457,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
 })
 
+document.addEventListener('click', (e) => {
+  const locationEl = e.target.closest('#location_url');
+  if (locationEl) {
+    const id = locationEl.dataset.id;
+    if (id) {
+      window.location.href = `locations_details.html?id=${id}`;
+    }
+  }
+});
+
+document.addEventListener('click', (e) => {
+  const episodeEl = e.target.closest('.episodes__item');
+  if (episodeEl) {
+    const id = episodeEl.dataset.id;
+    if (id) {
+      window.location.href = `episodes_details.html?id=${id}`;
+    }
+  }
+});
+
+
 
 
 document.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(window.location.search);
   const id = params.get('id');
 
-  // Определяем тип страницы по классу или другому признаку, например:
+  
   const isLocationPage = !!document.querySelector('.location-details');
   const isEpisodePage = !!document.querySelector('.episode-details');
 

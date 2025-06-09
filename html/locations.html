@@ -31,23 +31,20 @@
                 <input type="text" placeholder="Filter by name...">
             </article>
 
-            <article class="filters__filter-item">
-                <select data-filter="type"><option disabled selected>Type</option></select>
-                <button class="reset-filter" data-reset="type">×</button>
-            </article>
-            <article class="filters__filter-item">
-                <select data-filter="dimension"><option disabled selected>Dimension</option></select>
-                <button class="reset-filter" data-reset="dimension">×</button>
-            </article>
+            <div class="select-wrapper">
+                <select class="filters__filter-item" data-filter="type">
+                 <option value="" disabled selected>Type</option>
+                </select>
+            </div>
+            <div class="select-wrapper">
+                <select class="filters__filter-item" data-filter="dimension">
+                 <option value="" disabled selected>Dimension</option>
+                </select>
+            </div>
         </section>
 
         <section class="locations cards">
-            <!-- <article class="locations__card card">
-                <div class="locations__card-info">
-                    <h3 class="locations__card-name">Earth (C-137)</h3>
-                    <span class="locations__card-other">Planet</span>
-                </div>
-            </article> -->
+           
         </section>
         <button class="loadmore" data-type="location" 
         data-url="https://rickandmortyapi.com/api/location">LOAD MORE</button>
