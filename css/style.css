@@ -21,16 +21,19 @@
 
 .cards {
     display: grid;
+    margin: 0 auto;
     width: 100%;
     max-width: 1020px;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     column-gap: 20px;
     row-gap: 24px;
+    justify-items: center;
 }
 
 
 .characters__card, .locations__card, .episodes__card {
-    display: flex;
+    display: flex;    
+    width: 100%;
     max-width: 240px;
     border-radius: 4px;
     box-shadow: 2px 0px 8px 2px rgba(0, 0, 0, 0.1);
@@ -73,8 +76,11 @@
 /* Header */
 
 .header {
+    position: relative;
     box-shadow: 2px 0px 8px 2px rgba(0, 0, 0, 0.1);
-    padding: 0.5rem 15rem;
+    padding: 0.5rem 10rem;
+    z-index: 4;
+    background-color: white;
 }
 
 .header__content {
@@ -118,6 +124,68 @@
     width: 100%;
 }
 
+/* Mobile-menu */
+
+.mobile-menu {
+    position: fixed;
+    display: none;
+    top: 69px;
+    left: 0;
+    width: 100%;
+    height: auto;
+    background: white;
+    transition: 0.3s ease;
+    z-index: 3;
+    padding: 2rem;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+  }
+  
+  .mobile-menu.open {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .mobile-menu__items {
+    flex-direction: column;
+    font-size: 24px;
+  }
+  
+  .burger-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .burger-btn::after {
+    content: '×';
+    cursor: pointer;
+    display: none;
+    pointer-events: auto;
+    color: rgba(0, 0, 0, 0.54);
+    font-size: 36px;
+  }
+
+  .burger-btn.open span {
+    display: none;
+  }
+
+  .burger-btn.open::after {
+    display: block;
+  }
+  
+  .burger-btn span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: black;
+  }
+  
+
 
 /* Main */
 
@@ -132,6 +200,9 @@
 /* main__logo */
 
 .main__logo {
+    width: 100%;
+    max-width: 732px;
+    height: auto;
     filter: drop-shadow(0px 0px 10px #7dff7ab7);
 }
 
@@ -140,7 +211,7 @@
 .goback-btn {
     position: absolute;
     left: 15%;
-    top: 100px;
+    top: 50px;
     background-color: rgba(0, 0, 0, 0);
     color: rgba(0, 0, 0, 1);
     font-weight: 700;
@@ -189,7 +260,6 @@
     appearance: none;
     background: white;
     cursor: pointer;
-    
     font-size: 16px;
     font-weight: 400;
     color: rgba(0, 0, 0, 0.6);

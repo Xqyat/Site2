@@ -1,5 +1,36 @@
-@media (max-width: 997px) {
+@media (max-width: 1500px) {
     .main {
-        padding: 100px !important;
+        padding: 1rem !important;
     }
+}
+
+@media (max-width: 900px) {
+
+    .header {
+        padding: 0.5rem 2.5rem !important;
+    }
+    
+    .select-wrapper {
+        width: 120px !important;
+    }
+}
+
+@media (max-width: 900px) {
+
+    .main_logo {
+        max-width: 160px !important;
+    }
+
+}
+
+@media (max-width: 775px) {
+
+    .burger-btn {
+        display: flex !important;
+    }
+
+    .nav {
+        display: none !important;
+    }
+
 }

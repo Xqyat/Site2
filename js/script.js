@@ -533,6 +533,17 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+// mobile-menu
+
+const burgerBtn = document.querySelector('.burger-btn');
+const mobileMenu = document.querySelector('.mobile-menu');
+
+burgerBtn.addEventListener('click', () => {
+  const isOpen = mobileMenu.classList.toggle('open');
+  burgerBtn.classList.toggle('open', isOpen);
+});
+
+
 
 
 
