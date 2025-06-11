@@ -1,5 +1,5 @@
 // Filters
-
+document.addEventListener('DOMContentLoaded', () => {
 const select = document.querySelector('.filters__filter-item');
 const wrapper = document.querySelector('.select-wrapper');
 
@@ -140,25 +140,24 @@ function loadAndRenderFiltered(url, containerSelector, type, loadMoreBtn, filter
 
 
 
+function isDesktop() {
+  return window.innerWidth >= 530; 
+}
 
 function updateResults() {
   const filters = getFilterParams();
   loadAndRenderFiltered(baseUrl, containerSelector, type, loadMoreBtn, filters);
 }
 
-let debounceTimeout;
-if(searchInput) {
+
+if (searchInput) {
   searchInput.addEventListener('input', () => {
+    if (!isDesktop()) return; 
     clearTimeout(debounceTimeout);
     debounceTimeout = setTimeout(updateResults, 500);
   });
 }
 
-if(selects) {
-selects.forEach(select => {
-  select.addEventListener('change', updateResults);
-});
-}
 
 if (selects) {
   selects.forEach(select => {
@@ -169,7 +168,11 @@ if (selects) {
         const isNotDefault = !select.querySelector('option[disabled]:checked');
         wrapper.classList.toggle('has-value', isNotDefault);
       }
-      updateResults();
+
+      if (isDesktop()) {
+        updateResults(); 
+      }
+      
     });
 
     if (wrapper) {
@@ -221,22 +224,79 @@ document.querySelectorAll('.reset-filter').forEach(btn => {
 });
 
 
-document.addEventListener('DOMContentLoaded', () => {
-  loadFilterOptions();
+
+loadFilterOptions();
+
+
+// mobile-menu
+
+const burgerBtn = document.querySelector('.burger-btn');
+const mobileMenu = document.querySelector('.mobile-menu');
+
+burgerBtn.addEventListener('click', () => {
+  const isOpen = mobileMenu.classList.toggle('open');
+  burgerBtn.classList.toggle('open', isOpen);
+});
+
+
+// mobile-filters
+
+const openFiltersBtn = document.querySelector('.open-filters');
+const filtersModal = document.querySelector('.mobile-filters');
+const closeBtn = document.querySelector('.mobile-filters__content-title-wrapper .close-btn');
+const applyFiltersBtn = document.querySelector('.apply-filters');
+
+openFiltersBtn?.addEventListener('click', () => {
+  filtersModal.classList.add('open');
+});
+
+closeBtn?.addEventListener('click', () => {
+  console.log("Work")
+  filtersModal.classList.remove('open');
 });
 
 
 
-// Cards
 
-function getCardLimitByScreen() {
-  const width = window.innerWidth;
-  if (width >= 900) return 12;
-  if (width >= 775) return 8;
-  return 2;
+function getAllFilters() {
+  const allFilters = {};
+
+  document.querySelectorAll('select[data-filter]').forEach(select => {
+    if (select.value) {
+      allFilters[select.dataset.filter] = select.value;
+    }
+  });
+
+  if (searchInput && searchInput.value.trim()) {
+    allFilters.name = searchInput.value.trim();
+  }
+
+  return allFilters;
 }
 
-let nextUrl = 'https://rickandmortyapi.com/api/character';
+function applyFilters(filters = {}) {
+  const params = new URLSearchParams(window.location.search);
+
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value) {
+      params.set(key, value);
+    } else {
+      params.delete(key);
+    }
+  });  
+}
+
+if (applyFiltersBtn) {
+  applyFiltersBtn.addEventListener('click', () => {
+    const filters = getAllFilters();
+    applyFilters(filters);
+    filtersModal.classList.remove('open');
+    updateResults();
+  });
+}
+
+
+// Cards
 
 function createCard(data, type) {
   let card, info, name;
@@ -372,77 +432,74 @@ document.querySelectorAll('.loadmore').forEach(loadMoreBtn => {
 });
 
 // Details
-document.addEventListener('DOMContentLoaded', () => {
-  const params = new URLSearchParams(window.location.search);
-  const id = params.get('id');
 
+const params = new URLSearchParams(window.location.search);
+const id = params.get('id');
+
+if (id && id !== 'null') {
   fetch(`https://rickandmortyapi.com/api/character/${id}`)
-    .then(res => res.json())
+    .then(res => {
+      if (!res.ok) throw new Error(`Ошибка сервера: ${res.status}`);
+      return res.json();
+    })
     .then(data => {
       const container = document.querySelector('.character-details');
+      if (!container) return; 
 
       container.innerHTML = `
-          <div class="character-details__portrait">
-            <img src="${data.image}" alt="${data.name}">
-            <h1>${data.name}</h1>
+        <div class="character-details__portrait">
+          <img src="${data.image}" alt="${data.name}">
+          <h1>${data.name}</h1>
+        </div>
+        <div class="character-details__info">
+          <div class="character-details__info-block informations-items">
+            <h3>Informations</h3>
+            <article class="informations__item">
+              <div class="informations__item-contetnt">
+                <h6>Gender</h6>
+                <span>${data.gender}</span>
+              </div>
+            </article>
+            <article class="informations__item">
+              <div class="informations__item-contetnt">
+                <h6>Status</h6>
+                <span>${data.status}</span>
+              </div>
+            </article>
+            <article class="informations__item">
+              <div class="informations__item-contetnt">
+                <h6>Species</h6>
+                <span>${data.species}</span>
+              </div>
+            </article>
+            <article class="informations__item">
+              <div class="informations__item-contetnt">
+                <h6>Origin</h6>
+                <span>${data.origin.name}</span>
+              </div>
+            </article>
+            <article class="informations__item">
+              <div class="informations__item-contetnt">
+                <h6>Type</h6>
+                <span>${data.type || 'Unknown'}</span>
+              </div>
+            </article>
+            <article class="informations__item" id="location_url" data-id="${data.location.url.split('/').pop()}">
+              <div class="informations__item-contetnt">
+                <h6>Location</h6>
+                <span>${data.location.name}</span>
+              </div>
+              <div class="informations__item-svg">
+                <svg width="8" height="12" viewBox="0 0 8 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M1.99997 0L0.589966 1.41L5.16997 6L0.589966 10.59L1.99997 12L7.99997 6L1.99997 0Z" fill="#8E8E93"/>
+                </svg>
+              </div>
+            </article>
           </div>
-          <div class="character-details__info">
-            <div class="character-details__info-block informations-items">
-              <h3>Informations</h3>
-
-              <article class="informations__item">
-                <div class="informations__item-contetnt">
-                  <h6>Gender</h6>
-                  <span>${data.gender}</span>
-                </div>
-              </article>
-
-              <article class="informations__item">
-                <div class="informations__item-contetnt">
-                  <h6>Status</h6>
-                  <span>${data.status}</span>
-                </div>
-              </article>
-
-              <article class="informations__item">
-                <div class="informations__item-contetnt">
-                  <h6>Species</h6>
-                  <span>${data.species}</span>
-                </div>
-              </article>
-
-              <article class="informations__item">
-                <div class="informations__item-contetnt">
-                  <h6>Origin</h6>
-                  <span>${data.origin.name}</span>
-                </div>
-              </article>
-
-              <article class="informations__item">
-                <div class="informations__item-contetnt">
-                  <h6>Type</h6>
-                  <span>${data.type || 'Unknown'}</span>
-                </div>
-              </article>
-
-              <article class="informations__item" id="location_url" data-id="${data.location.url.split('/').pop()}">
-                <div class="informations__item-contetnt">
-                  <h6>Location</h6>
-                  <span>${data.location.name}</span>
-                </div>
-                <div class="informations__item-svg">
-                  <svg width="8" height="12" viewBox="0 0 8 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="M1.99997 0L0.589966 1.41L5.16997 6L0.589966 10.59L1.99997 12L7.99997 6L1.99997 0Z" fill="#8E8E93"/>
-                  </svg>
-                </div>
-              </article>
-
-            </div>
-
-            <div class="character-details__info-block episodes-items">
-              <h3>Episodes</h3>
-            </div>
+          <div class="character-details__info-block episodes-items">
+            <h3>Episodes</h3>
           </div>
+        </div>
       `;
 
       const episodesContainer = container.querySelector('.episodes-items');
@@ -455,16 +512,16 @@ document.addEventListener('DOMContentLoaded', () => {
             episodeEl.className = 'episodes__item';
             episodeEl.dataset.id = epData.id;
             episodeEl.innerHTML = `
-            <div class="episodes__item-content">
-              <h6>${epData.episode}</h6>
-              <span>${epData.name}</span>
-              <p>${epData.air_date}</p>
-            </div>
-            <div class="episodes__item-svg">
-              <svg width="8" height="12" viewBox="0 0 8 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path fill-rule="evenodd" clip-rule="evenodd" d="M1.99997 0L0.589966 1.41L5.16997 6L0.589966 10.59L1.99997 12L7.99997 6L1.99997 0Z" fill="#8E8E93"/>
-              </svg>
-            </div>
+              <div class="episodes__item-content">
+                <h6>${epData.episode}</h6>
+                <span>${epData.name}</span>
+                <p>${epData.air_date}</p>
+              </div>
+              <div class="episodes__item-svg">
+                <svg width="8" height="12" viewBox="0 0 8 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M1.99997 0L0.589966 1.41L5.16997 6L0.589966 10.59L1.99997 12L7.99997 6L1.99997 0Z" fill="#8E8E93"/>
+                </svg>
+              </div>
             `;
             episodesContainer.appendChild(episodeEl);
           });
@@ -473,8 +530,9 @@ document.addEventListener('DOMContentLoaded', () => {
     .catch(err => {
       console.error('Ошибка загрузки данных персонажа:', err);
     });
+}
 
-})
+
 
 document.addEventListener('click', (e) => {
   const locationEl = e.target.closest('#location_url');
@@ -495,13 +553,6 @@ document.addEventListener('click', (e) => {
     }
   }
 });
-
-
-
-
-document.addEventListener('DOMContentLoaded', () => {
-  const params = new URLSearchParams(window.location.search);
-  const id = params.get('id');
 
   
   const isLocationPage = !!document.querySelector('.location-details');
@@ -550,67 +601,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       });
   }
-});
-
-// mobile-menu
-
-const burgerBtn = document.querySelector('.burger-btn');
-const mobileMenu = document.querySelector('.mobile-menu');
-
-burgerBtn.addEventListener('click', () => {
-  const isOpen = mobileMenu.classList.toggle('open');
-  burgerBtn.classList.toggle('open', isOpen);
-});
-
-
-// mobile-filters
-
-const openFiltersBtn = document.querySelector('.open-filters');
-const filtersModal = document.querySelector('.mobile-filters');
-const applyFiltersBtn = document.querySelector('.apply-filters');
-
-openFiltersBtn?.addEventListener('click', () => {
-  filtersModal.classList.add('open');
-});
-
-
-
-function getAllFilters() {
-  const allFilters = {};
-
-  document.querySelectorAll('select[data-filter]').forEach(select => {
-    if (select.value) {
-      allFilters[select.dataset.filter] = select.value;
-    }
-  });
-
-  return allFilters;
-}
-
-function applyFilters(filters = {}) {
-  const params = new URLSearchParams(window.location.search);
-
-  Object.entries(filters).forEach(([key, value]) => {
-    if (value) {
-      params.set(key, value);
-    } else {
-      params.delete(key);
-    }
-  });
-  window.location.search = params.toString();
-}
-
-if (applyFiltersBtn) {
-  applyFiltersBtn.addEventListener('click', () => {
-    const filters = getAllFilters(); 
-    applyFilters(filters);
-    const mobileFilters = document.querySelector('.mobile-filters');
-    if (mobileFilters) {
-      mobileFilters.classList.remove('open');
-    }
-  });
-}
-
 
 // loader
 
@@ -623,3 +613,4 @@ if (goback) {
     history.back(); 
   });
 }
+})

@@ -400,7 +400,7 @@
     align-items: center;
     text-align: center;
     width: 75%;
-    top: 15%;
+    top: 5%;
     left: 15%;
     right: 0;
     background: white;
@@ -413,9 +413,23 @@
 }
 
 .mobile-filters.open {
-    display: flex;;
+    display: flex;
 }
-  
+
+.mobile-filters__content-title-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.close-btn {
+    cursor: pointer;
+    pointer-events: auto;
+    font-size: 26px;
+    color: #999;
+}
+
+
 .mobile-filters__content {
     display: flex;
     flex-direction: column;
