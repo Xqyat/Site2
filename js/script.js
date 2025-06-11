@@ -1,7 +1,7 @@
 // Filters
 
 const select = document.querySelector('.filters__filter-item');
-   const wrapper = document.querySelector('.select-wrapper');
+const wrapper = document.querySelector('.select-wrapper');
 
 const type =
   document.querySelector('[data-type]')?.dataset.type ||
@@ -53,14 +53,25 @@ async function loadFilterOptions() {
     const speciesSet = await getAllUniqueFieldValues(baseUrl, 'species');
     const genderSet = await getAllUniqueFieldValues(baseUrl, 'gender');
     const statusSet = await getAllUniqueFieldValues(baseUrl, 'status');
-    fillSelectOptions(filtersSection.querySelector('select[data-filter="species"]'), speciesSet);
-    fillSelectOptions(filtersSection.querySelector('select[data-filter="gender"]'), genderSet);
-    fillSelectOptions(filtersSection.querySelector('select[data-filter="status"]'), statusSet);
+    document.querySelectorAll('select[data-filter="species"]').forEach(select => {
+      fillSelectOptions(select, speciesSet);
+    });
+    document.querySelectorAll('select[data-filter="gender"]').forEach(select => {
+      fillSelectOptions(select, genderSet);
+    });
+    document.querySelectorAll('select[data-filter="status"]').forEach(select => {
+      fillSelectOptions(select, statusSet);
+    });
   } else if (type === 'location') {
     const typeSet = await getAllUniqueFieldValues(baseUrl, 'type');
     const dimensionSet = await getAllUniqueFieldValues(baseUrl, 'dimension');
-    fillSelectOptions(filtersSection.querySelector('select[data-filter="type"]'), typeSet);
-    fillSelectOptions(filtersSection.querySelector('select[data-filter="dimension"]'), dimensionSet);
+
+    document.querySelectorAll('select[data-filter="type"]').forEach(select => {
+      fillSelectOptions(select, typeSet);
+    });
+    document.querySelectorAll('select[data-filter="dimension"]').forEach(select => {
+      fillSelectOptions(select, dimensionSet);
+    });
   }
 }
 
@@ -217,6 +228,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // Cards
+
+function getCardLimitByScreen() {
+  const width = window.innerWidth;
+  if (width >= 900) return 12;
+  if (width >= 775) return 8;
+  return 2;
+}
+
 let nextUrl = 'https://rickandmortyapi.com/api/character';
 
 function createCard(data, type) {
@@ -544,8 +563,53 @@ burgerBtn.addEventListener('click', () => {
 });
 
 
+// mobile-filters
+
+const openFiltersBtn = document.querySelector('.open-filters');
+const filtersModal = document.querySelector('.mobile-filters');
+const applyFiltersBtn = document.querySelector('.apply-filters');
+
+openFiltersBtn?.addEventListener('click', () => {
+  filtersModal.classList.add('open');
+});
 
 
+
+function getAllFilters() {
+  const allFilters = {};
+
+  document.querySelectorAll('select[data-filter]').forEach(select => {
+    if (select.value) {
+      allFilters[select.dataset.filter] = select.value;
+    }
+  });
+
+  return allFilters;
+}
+
+function applyFilters(filters = {}) {
+  const params = new URLSearchParams(window.location.search);
+
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value) {
+      params.set(key, value);
+    } else {
+      params.delete(key);
+    }
+  });
+  window.location.search = params.toString();
+}
+
+if (applyFiltersBtn) {
+  applyFiltersBtn.addEventListener('click', () => {
+    const filters = getAllFilters(); 
+    applyFilters(filters);
+    const mobileFilters = document.querySelector('.mobile-filters');
+    if (mobileFilters) {
+      mobileFilters.classList.remove('open');
+    }
+  });
+}
 
 
 // loader
