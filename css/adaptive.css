@@ -50,7 +50,7 @@
     }
 
     .character-details__portrait img {
-        transform: scale(0.7);
+        transform: scale(0.6);
     }
 
     .character-details__portrait h1 {
@@ -65,6 +65,7 @@
         flex-direction: column;
         align-items: center;
     }
+    
 
 
 }

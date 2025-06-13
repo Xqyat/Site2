@@ -18,27 +18,6 @@ const baseUrl = loadMoreBtn?.dataset.url || '';
 const searchInput = filtersSection?.querySelector('input[type="text"]') || null;
 const selects = filtersSection?.querySelectorAll('select[data-filter]') || null;
 
-
-
-
-async function getAllUniqueFieldValues(apiUrl, field) {
-  const valueSet = new Set();
-  let url = apiUrl;
-
-  while (url) {
-    const response = await fetch(url);
-    const data = await response.json();
-
-    data.results.forEach(item => {
-      if (item[field]) valueSet.add(item[field]);
-    });
-
-    url = data.info.next;
-  }
-
-  return valueSet;
-}
-
 function fillSelectOptions(selectElement, valuesSet) {
   valuesSet.forEach(value => {
     const option = document.createElement('option');
@@ -48,11 +27,32 @@ function fillSelectOptions(selectElement, valuesSet) {
   });
 }
 
+
 async function loadFilterOptions() {
   if (type === 'character') {
-    const speciesSet = await getAllUniqueFieldValues(baseUrl, 'species');
-    const genderSet = await getAllUniqueFieldValues(baseUrl, 'gender');
-    const statusSet = await getAllUniqueFieldValues(baseUrl, 'status');
+    const speciesSet = [
+      "Alien",
+      "Animal",
+      "Cronenberg",
+      "Disease",
+      "Human",
+      "Humanoid",
+      "Mythological Creature",
+      "Poopybutthole",
+      "Robot",
+      "unknown"
+    ];
+    const genderSet = [
+      "Female",
+      "Genderless",
+      "Male",
+      "unknown"
+  ];
+    const statusSet = [
+      "Alive",
+      "Dead",
+      "unknown"
+  ];
     document.querySelectorAll('select[data-filter="species"]').forEach(select => {
       fillSelectOptions(select, speciesSet);
     });
@@ -63,8 +63,89 @@ async function loadFilterOptions() {
       fillSelectOptions(select, statusSet);
     });
   } else if (type === 'location') {
-    const typeSet = await getAllUniqueFieldValues(baseUrl, 'type');
-    const dimensionSet = await getAllUniqueFieldValues(baseUrl, 'dimension');
+    const typeSet = [
+      "Acid Plant",
+      "Arcade",
+      "Artificially generated world",
+      "Asteroid",
+      "Base",
+      "Box",
+      "Cluster",
+      "Consciousness",
+      "Convention",
+      "Country",
+      "Customs",
+      "Daycare",
+      "Death Star",
+      "Diegesis",
+      "Dimension",
+      "Dream",
+      "Dwarf planet (Celestial Dwarf)",
+      "Elemental Rings",
+      "Fantasy town",
+      "Game",
+      "Hell",
+      "Human",
+      "Liquid",
+      "Machine",
+      "Memory",
+      "Menagerie",
+      "Microverse",
+      "Miniverse",
+      "Mount",
+      "Nightmare",
+      "Non-Diegetic Alternative Reality",
+      "Planet",
+      "Police Department",
+      "Quadrant",
+      "Quasar",
+      "Reality",
+      "Resort",
+      "Spa",
+      "Space",
+      "Space station",
+      "Spacecraft",
+      "TV",
+      "Teenyverse",
+      "Woods",
+      "unknown"
+  ];
+
+    const dimensionSet = [
+    "Chair Dimension",
+    "Cromulon Dimension",
+    "Cronenberg Dimension",
+    "Dimension 5-126",
+    "Dimension C-137",
+    "Dimension C-35",
+    "Dimension C-500A",
+    "Dimension D-99",
+    "Dimension D716",
+    "Dimension D716-B",
+    "Dimension D716-C",
+    "Dimension J-22",
+    "Dimension J19ζ7",
+    "Dimension K-22",
+    "Dimension K-83",
+    "Eric Stoltz Mask Dimension",
+    "Evil Rick's Target Dimension",
+    "Fantasy Dimension",
+    "Fascist Dimension",
+    "Fascist Shrimp Dimension",
+    "Fascist Teddy Bear Dimension",
+    "Giant Telepathic Spiders Dimension",
+    "Magic Dimension",
+    "Merged Dimension",
+    "Phone Dimension",
+    "Pizza Dimension",
+    "Post-Apocalyptic Dimension",
+    "Replacement Dimension",
+    "Testicle Monster Dimension",
+    "Tusk Dimension",
+    "Unknown dimension",
+    "Wasp Dimension",
+    "unknown"
+];
 
     document.querySelectorAll('select[data-filter="type"]').forEach(select => {
       fillSelectOptions(select, typeSet);
@@ -141,7 +222,7 @@ function loadAndRenderFiltered(url, containerSelector, type, loadMoreBtn, filter
 
 
 function isDesktop() {
-  return window.innerWidth >= 530; 
+  return window.innerWidth > 530; 
 }
 
 function updateResults() {
@@ -150,6 +231,8 @@ function updateResults() {
 }
 
 
+let debounceTimeout;
+
 if (searchInput) {
   searchInput.addEventListener('input', () => {
     if (!isDesktop()) return; 
@@ -157,6 +240,7 @@ if (searchInput) {
     debounceTimeout = setTimeout(updateResults, 500);
   });
 }
+
 
 
 if (selects) {
@@ -172,7 +256,6 @@ if (selects) {
       if (isDesktop()) {
         updateResults(); 
       }
-      
     });
 
     if (wrapper) {
@@ -223,9 +306,10 @@ document.querySelectorAll('.reset-filter').forEach(btn => {
   });
 });
 
-
-
-loadFilterOptions();
+if (filtersSection) {
+  loadFilterOptions();
+  updateResults(); 
+}
 
 
 // mobile-menu
@@ -245,14 +329,18 @@ const openFiltersBtn = document.querySelector('.open-filters');
 const filtersModal = document.querySelector('.mobile-filters');
 const closeBtn = document.querySelector('.mobile-filters__content-title-wrapper .close-btn');
 const applyFiltersBtn = document.querySelector('.apply-filters');
+const overlay = document.querySelector('.overlay-blur');
 
 openFiltersBtn?.addEventListener('click', () => {
   filtersModal.classList.add('open');
+  overlay.classList.add('visible');
+  document.body.classList.add('no-scroll');
 });
 
 closeBtn?.addEventListener('click', () => {
-  console.log("Work")
   filtersModal.classList.remove('open');
+  overlay.classList.remove('visible');
+  document.body.classList.remove('no-scroll');
 });
 
 
@@ -291,6 +379,8 @@ if (applyFiltersBtn) {
     const filters = getAllFilters();
     applyFilters(filters);
     filtersModal.classList.remove('open');
+    overlay.classList.remove('visible');
+    document.body.classList.remove('no-scroll');
     updateResults();
   });
 }
@@ -414,22 +504,6 @@ function loadAndRender(url, containerSelector, type, loadMoreBtn) {
     })
     .catch(error => console.error('Ошибка:', error));
 }
-
-
-document.querySelectorAll('.loadmore').forEach(loadMoreBtn => {
-  const type = loadMoreBtn.dataset.type;
-  const containerSelector = `section.${type}s.cards`;
-  let url = loadMoreBtn.dataset.url;
-
-  loadAndRender(url, containerSelector, type, loadMoreBtn);
-
-  loadMoreBtn.addEventListener('click', () => {
-    const nextUrl = loadMoreBtn.dataset.url;
-    if (nextUrl) {
-      loadAndRender(nextUrl, containerSelector, type, loadMoreBtn);
-    }
-  });
-});
 
 // Details
 
