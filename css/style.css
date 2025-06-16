@@ -496,8 +496,6 @@ body.no-scroll {
 
 /* Characters */
 
-
-
 .characters__card-image {
     border-radius: 4px 4px 0 0;
     max-width: 240px;
@@ -616,7 +614,7 @@ body.no-scroll {
 
 .loadmore:active {
     transform: scale(0.9);
-}
+}       
 
 /* Footer */
 
